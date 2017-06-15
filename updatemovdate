@@ -1,0 +1,16 @@
+function updatemovdate {
+  for f in *.mov
+  do
+    if [ -f "$f" ]
+    then
+      echo processing $f
+      local FILECREATED=$(date -r $(stat -f %B "$f") +%Y%m%d%H%M.%S)
+      local FILENAMEPREPEND=$(date -r $(stat -f %B "$f") +%Y%m%d%H%M%S)
+      exiftool -overwrite_original "-createdate<creationdate" "-modifydate<creationdate" "-trackcreatedate<creationdate" "-trackmodifydate<creationdate" "-mediacreatedate<creationdate" "-mediamodifydate<creationdate" "$f"
+      touch -t $FILECREATED "$f"
+      mv "$f" "${FILENAMEPREPEND}_$f"
+    fi
+  done
+}
+updatemovdate
+echo "Done."
