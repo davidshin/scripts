@@ -1,3 +1,7 @@
+# this script prepares all .mov files in the current directory for syncing with google photos
+# it updates the exif, the last accessed date, and prepends the date
+# this script is intended to process .mov files grabbed from imovie import
+
 function updatemovdate {
   for f in *.mov
   do
@@ -7,7 +11,7 @@ function updatemovdate {
       local FILECREATED=$(date -r $(stat -f %B "$f") +%Y%m%d%H%M.%S)
       local FILENAMEPREPEND=$(date -r $(stat -f %B "$f") +%Y%m%d%H%M%S)
       exiftool -overwrite_original "-createdate<creationdate" "-modifydate<creationdate" "-trackcreatedate<creationdate" "-trackmodifydate<creationdate" "-mediacreatedate<creationdate" "-mediamodifydate<creationdate" "$f"
-      touch -t $FILECREATED "$f"
+      touch -t $FILECREATED "$f" # last access and modify time
       mv "$f" "${FILENAMEPREPEND}_$f"
     fi
   done
